@@ -10,7 +10,7 @@ This demo uses NextJS's [Pages Router](https://nextjs.org/docs/pages/building-yo
 
 Copy the .env.local.example file into a file named .env.local in the folder of the server you want to use. For example:
 
-You will need an Openfort account in order to run the demo. Once you set up your account, go to the Openfort [developer dashboard](https://dashboard.openfort.xyz/apikeys) to find your API keys.
+You will need an Openfort account in order to run the demo. Once you set up your account, go to the Openfort [developer dashboard](https://dashboard.openfort.xyz/developers/api-keys) to find your API keys.
 
 To enable your embedded signer, you can follow the instructions [here](https://www.openfort.xyz/docs/guides/javascript/embedded-signer/recovery).
 
@@ -18,8 +18,9 @@ To enable your embedded signer, you can follow the instructions [here](https://w
 # In your terminal, create .env.local from .env.example
 cp .env.example .env.local
 
-NEXTAUTH_SHIELD_ENCRYPTION_SHARE=
+NEXTAUTH_OPENFORT_SECRET_KEY=
 NEXTAUTH_SHIELD_SECRET_KEY=
+NEXTAUTH_SHIELD_ENCRYPTION_SHARE=
 
 NEXT_PUBLIC_SHIELD_API_KEY=
 NEXT_PUBLIC_OPENFORT_PUBLIC_KEY=
@@ -29,8 +30,9 @@ NEXT_PUBLIC_OPENFORT_PUBLIC_KEY=
 
 [![Required](https://img.shields.io/badge/REQUIRED-TRUE-ORANGE.svg)](https://shields.io/)
 
-If you want to sponsor transactions, you can add policies to your `.env.local` file. You can create gas sponsorship policies [from your Openfort dashboard](https://www.openfort.xyz/docs/guides/dashboard/gas-sponsorship).
+If you want to sponsor transactions, you can add policies to your `.env.local` file. You can create gas sponsorship policies from your [Openfort dashboard](https://dashboard.openfort.xyz/policies).
 
+For this sample, create a policy in `Polygon Amoy` with a `catch all contracts` rule. [Learn more](https://www.openfort.xyz/docs/guides/dashboard/gas-sponsorship)
 
 ```sh
 NEXT_PUBLIC_POLICY_ID=
@@ -38,11 +40,11 @@ NEXT_PUBLIC_POLICY_ID=
 
 **3. Get your Firebase Config**
 
-First go to Firebase config: Console > Project settings > General adn create an app for your prohject if you still don't have one. 
+First go to Firebase config: Console > Project settings > General and create an app for your project if you still don't have one. 
 
 <img width="1083" alt="image" src="https://github.com/openfort-xyz/samples/assets/62625514/f5884f03-ebbd-4c16-a154-b04803d40874">
 
-Copy the FirebaseConfig and continue
+Update `.env` with those values (e.g. NEXT_PUBLIC_apiKey would be apiKey).
 
 <img width="1066" alt="image" src="https://github.com/openfort-xyz/samples/assets/62625514/46067ccc-7821-4a9e-91c2-728ec17782c5">
 
@@ -50,11 +52,14 @@ Then go to Firebase-Admin config: Console > Project settings > Service accounts 
 
 <img width="1005" alt="image" src="https://github.com/openfort-xyz/samples/assets/62625514/2281e7d8-096e-49d4-b0d4-d2344e933f34">
 
-Update `.env`
+Update `.env` `firebase-admin` values with the json given.
+
+***Enable auth***
+Enable email provider in your firebase project.
 
 **4. Set up Firebase Auth in Openfort**
 
-To set up Firebase to authenticate players with Openfort, visit your [dashboard provider settings](https://dashboard.openfort.xyz/players/auth/providers). You can follow a guide on how to set up Firebase Auth in Openfort [here](https://www.openfort.xyz/docs/guides/javascript/auth/external-auth).
+To set up Firebase to authenticate players with Openfort, visit your [dashboard provider settings](https://dashboard.openfort.xyz/players/auth/providers). You can follow a guide on how to set up Firebase Auth in Openfort [here](https://www.openfort.xyz/docs/guides/dashboard/external-auth/firebase).
 
 <div align="center">
   <img
@@ -78,6 +83,8 @@ In your project directory, run `npm run dev`. You can now visit http://localhost
 
 
 ## Get support
+If you found a bug or want to suggest a new feature, use case or sample; please [file an issue](../../issues).
+
 If you have questions, comments, or need help with code, we're here to help:
 - on [Discord](https://discord.com/invite/t7x7hwkJF4)
 - on Twitter at [@openfortxyz](https://twitter.com/openfortxyz)
