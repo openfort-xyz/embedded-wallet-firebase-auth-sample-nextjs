@@ -15,41 +15,85 @@ import { useAccount, useChainId, useConnect, useDisconnect, useEnsName } from "w
 
 const HomePage: NextPage = () => {
   const { user } = useAuth();
-  const { embeddedState, getEvmProvider } = useOpenfort();
-  console.log("embeddedState", embeddedState);
+  const { embeddedState, initializeEvmProvider, isReady } = useOpenfort();
   const [message, setMessage] = useState<string>("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const {connectors, connect } = useConnect();
-  const { status, isConnected } = useAccount();
-  console.log("status", status);
-  console.log("isConnected", isConnected);
+  const { connectors, connect } = useConnect();
+  const { status, isConnected, address } = useAccount();
   const chainId = useChainId();
+  
+  // Use refs to prevent connection loops
+  const connectionAttemptedRef = useRef(false);
+  const providerInitializedRef = useRef(false);
 
   const handleSetMessage = (message: string) => {
     const newMessage = `${message} \n\n`;
-    setMessage((prev) =>  prev + newMessage);
+    setMessage((prev) => prev + newMessage);
   };
 
   useEffect(() => {
     if (textareaRef.current) {
-      textareaRef.current.scrollTop = 0;
-      textareaRef.current.focus();
+      textareaRef.current.scrollTop = textareaRef.current.scrollHeight;
     }
   }, [message]);
 
+  // Initialize EVM provider once when ready
   useEffect(() => {
-    getEvmProvider()
-  }, []);
-
-  useEffect(() => {
-    console.log("embeddedState", embeddedState);
-    if(embeddedState === EmbeddedState.READY && !isConnected && status !== "connecting") {
-      const connector = connectors.find((connector) => connector.name === "Openfort")
-      console.log("connector", connector)
-      if(!connector) return
-      connect({connector: connector!, chainId});
+    if (isReady && !providerInitializedRef.current) {
+      console.log("Initializing EVM provider...");
+      const provider = initializeEvmProvider();
+      if (provider) {
+        providerInitializedRef.current = true;
+        handleSetMessage("EVM Provider initialized successfully");
+      }
     }
-  }, [connectors, status]);
+  }, [isReady, initializeEvmProvider]);
+
+  // Handle Openfort connection with proper guards
+  useEffect(() => {
+    const connectToOpenfort = async () => {
+      // Check all conditions that should prevent connection
+      if (
+        connectionAttemptedRef.current || // Already attempted
+        !isReady || // Openfort not ready
+        !providerInitializedRef.current || // Provider not initialized
+        isConnected || // Already connected
+        status === "connecting" || // Currently connecting
+        !connectors.length // No connectors available
+      ) {
+        return;
+      }
+
+      const openfortConnector = connectors.find((c) => c.name === "Openfort");
+      if (!openfortConnector) {
+        console.warn("Openfort connector not found");
+        return;
+      }
+
+      // Mark that we've attempted connection
+      connectionAttemptedRef.current = true;
+
+      try {
+        console.log("Attempting to connect to Openfort...");
+        await connect({ connector: openfortConnector, chainId });
+        handleSetMessage("Connected to Openfort successfully");
+      } catch (error) {
+        console.error("Failed to connect:", error);
+        handleSetMessage(`Connection failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        // Reset the flag on error to allow retry
+        connectionAttemptedRef.current = false;
+      }
+    };
+
+    connectToOpenfort();
+  }, [isReady, isConnected, status, connectors, chainId, connect]);
+
+  // Reset connection attempt flag when user disconnects
+  useEffect(() => {
+    if (!isConnected && connectionAttemptedRef.current) {
+      connectionAttemptedRef.current = false;
+    }
+  }, [isConnected]);
 
   if (!user) return <LoginSignupForm />;
 
@@ -67,10 +111,13 @@ const HomePage: NextPage = () => {
     );
   }
 
-  if (embeddedState !== EmbeddedState.READY) {
+  if (!isReady) {
     return (
-      <div className="absolute top-1/2 left-1/2 flex items-center">
-        <Spinner />
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <div className="flex flex-col items-center">
+          <Spinner />
+          <p className="mt-4 text-gray-600">Initializing wallet...</p>
+        </div>
       </div>
     );
   }
@@ -127,26 +174,40 @@ const HomePage: NextPage = () => {
 };
 
 function Account() {
-  const account = useAccount()
+  const account = useAccount();
   const { data: ensName } = useEnsName({
     address: account.address,
-  })
-  const {disconnect,data} = useDisconnect()
+  });
+  const { disconnect } = useDisconnect();
 
   return (
-    <div>
-      <div>
-        account: {account.address} {ensName}
-        <br />
-        chainId: {account.chainId}
-        <br />
-        status: {account.status}
+    <div className="bg-gray-50 p-4 rounded-lg">
+      <h3 className="font-medium mb-2">Account Details</h3>
+      <div className="space-y-1 text-sm">
+        <p>
+          <span className="font-medium">Address:</span> {account.address} {ensName && `(${ensName})`}
+        </p>
+        <p>
+          <span className="font-medium">Chain ID:</span> {account.chainId}
+        </p>
+        <p>
+          <span className="font-medium">Status:</span> <span className={`font-medium ${account.status === 'connected' ? 'text-green-600' : 'text-gray-600'}`}>{account.status}</span>
+        </p>
+        <p>
+          <span className="font-medium">Connector:</span> {account.connector?.name || 'None'}
+        </p>
       </div>
       {account.connector?.name && account.connector?.name !== "Openfort" && (
-      <button type='button' onClick={() => disconnect()}>Disconnect</button>
+        <button 
+          type='button' 
+          onClick={() => disconnect()}
+          className="mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+        >
+          Disconnect
+        </button>
       )}
     </div>
-  )
+  );
 }
 
 export default HomePage;

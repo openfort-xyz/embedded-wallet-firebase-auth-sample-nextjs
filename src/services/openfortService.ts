@@ -1,9 +1,9 @@
 import { AuthPlayerResponse, Provider, ShieldAuthentication, TokenType, ShieldAuthType } from '@openfort/openfort-js';
 import openfort from '../utils/openfortConfig';
 import { ThirdPartyOAuthProvider } from '@openfort/openfort-js';
-import { polygonAmoy } from 'viem/chains';
+import { baseSepolia } from 'viem/chains';
 
-const chainId = polygonAmoy.id
+const chainId = baseSepolia.id
 
 class OpenfortService {
   async authenticateWithThirdPartyProvider(identityToken: string): Promise<AuthPlayerResponse> {

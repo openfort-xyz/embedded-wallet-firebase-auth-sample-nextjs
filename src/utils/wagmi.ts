@@ -1,15 +1,15 @@
 import { http, createConfig } from 'wagmi'
-import { polygonAmoy } from 'wagmi/chains'
+import { baseSepolia } from 'wagmi/chains'
 import { injected } from 'wagmi/connectors'
 
 export function getConfig() {
     return createConfig({
-        chains: [polygonAmoy],
+        chains: [baseSepolia],
         connectors: [
             injected(),
         ],
         transports: {
-            [polygonAmoy.id]: http('https://polygon-amoy.gateway.tenderly.co'),
+            [baseSepolia.id]: http('https://base-sepolia.gateway.tenderly.co'),
         },
     })
 }

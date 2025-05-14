@@ -4,7 +4,7 @@ import { EmbeddedState } from "@openfort/openfort-js";
 import Spinner from "../Shared/Spinner";
 import { useAuth } from "../../contexts/AuthContext";
 import { useAccount, useSignTypedData } from "wagmi";
-import { polygonAmoy } from "viem/chains";
+import { baseSepolia } from "viem/chains";
 
 const SignTypedDataButton: React.FC<{
   handleSetMessage: (message: string) => void;
@@ -22,7 +22,7 @@ const SignTypedDataButton: React.FC<{
       const domain = {
         name: "Openfort",
         version: "0.5",
-        chainId: polygonAmoy.id,
+        chainId: baseSepolia.id,
         verifyingContract: address,
       };
       const types = {

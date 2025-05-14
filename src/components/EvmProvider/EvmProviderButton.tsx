@@ -1,22 +1,22 @@
 import React, { FormEvent, useEffect } from "react";
 import { BaseError, parseAbi } from "viem";
-import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import { useAccount, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 
 const Provider1193ActionButton: React.FC<{
   handleSetMessage: (message: string) => void;
 }> = ({ handleSetMessage }) => {
   const { data: hash, error, isPending, writeContract } = useWriteContract()
-
+  const {address} = useAccount()
 
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
     const formData = new FormData(e.target as HTMLFormElement)
     const tokenId = formData.get('tokenId') as string
     writeContract({
-      address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-      abi: parseAbi(['function mint(uint256 tokenId)']),
+      address: '0x6b4582165Ef6e79489769ea62f8287C515e44FB6',
+      abi: parseAbi(['function mint(address to, uint256 tokenId)']),
       functionName: 'mint',
-      args: [BigInt(tokenId)],
+      args: [address!, BigInt(tokenId)],
     })
   }
 
