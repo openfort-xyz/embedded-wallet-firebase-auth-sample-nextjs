@@ -17,10 +17,6 @@ if (!process.env.NEXT_PUBLIC_OPENFORT_PUBLIC_KEY || !process.env.NEXT_PUBLIC_SHI
 const openfort = new Openfort({
   baseConfiguration,
   shieldConfiguration,
-  overrides: {
-    shieldUrl: shieldUrl,
-    backendUrl: 'http://localhost:3000'
-  },
 })
 
 export default openfort;
