@@ -14,19 +14,13 @@ export const useOpenfort = () => {
     const pollEmbeddedState = () => {
       const state = openfortService.getEmbeddedState();
       setEmbeddedState(state);
-
-      // Stop polling once ready
-      if (state === EmbeddedState.READY && pollingRef.current) {
-        clearInterval(pollingRef.current);
-        pollingRef.current = null;
-      }
     };
 
     // Initial check
     pollEmbeddedState();
 
     // Start polling only if not ready
-    if (embeddedState !== EmbeddedState.READY && !pollingRef.current) {
+    if (!pollingRef.current) {
       pollingRef.current = setInterval(pollEmbeddedState, 300);
     }
 
@@ -58,11 +52,6 @@ export const useOpenfort = () => {
           throw new Error('EVM provider is undefined');
         }
         providerRef.current = provider;
-
-        // Add provider to window for Wagmi to detect
-        if (typeof window !== 'undefined') {
-          (window as any).ethereum = provider;
-        }
       }
       return providerRef.current;
     } catch (error) {

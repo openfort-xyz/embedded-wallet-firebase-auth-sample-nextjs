@@ -19,11 +19,9 @@ const HomePage: NextPage = () => {
   const [message, setMessage] = useState<string>("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { connectors, connect } = useConnect();
-  const { status, isConnected, address } = useAccount();
+  const { status, isConnected } = useAccount();
   const chainId = useChainId();
   
-  // Use refs to prevent connection loops
-  const connectionAttemptedRef = useRef(false);
   const providerInitializedRef = useRef(false);
 
   const handleSetMessage = (message: string) => {
@@ -54,7 +52,6 @@ const HomePage: NextPage = () => {
     const connectToOpenfort = async () => {
       // Check all conditions that should prevent connection
       if (
-        connectionAttemptedRef.current || // Already attempted
         !isReady || // Openfort not ready
         !providerInitializedRef.current || // Provider not initialized
         isConnected || // Already connected
@@ -70,9 +67,6 @@ const HomePage: NextPage = () => {
         return;
       }
 
-      // Mark that we've attempted connection
-      connectionAttemptedRef.current = true;
-
       try {
         console.log("Attempting to connect to Openfort...");
         await connect({ connector: openfortConnector, chainId });
@@ -80,20 +74,12 @@ const HomePage: NextPage = () => {
       } catch (error) {
         console.error("Failed to connect:", error);
         handleSetMessage(`Connection failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
-        // Reset the flag on error to allow retry
-        connectionAttemptedRef.current = false;
       }
     };
 
     connectToOpenfort();
   }, [isReady, isConnected, status, connectors, chainId, connect]);
 
-  // Reset connection attempt flag when user disconnects
-  useEffect(() => {
-    if (!isConnected && connectionAttemptedRef.current) {
-      connectionAttemptedRef.current = false;
-    }
-  }, [isConnected]);
 
   if (!user) return <LoginSignupForm />;
 
