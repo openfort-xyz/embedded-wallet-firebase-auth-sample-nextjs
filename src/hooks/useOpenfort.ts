@@ -8,14 +8,9 @@ export const useOpenfort = () => {
   const pollingRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    const pollEmbeddedState = async () => {
-      try {
-        const state = await openfortService.getEmbeddedState();
-        setEmbeddedState(state);
-      } catch (error) {
-        console.error('Error checking embedded state with Openfort:', error);
-        if (pollingRef.current) clearInterval(pollingRef.current);
-      }
+    const pollEmbeddedState = () => {
+      const state = openfortService.getEmbeddedState();
+      setEmbeddedState(state);
     };
 
     if (!pollingRef.current) {

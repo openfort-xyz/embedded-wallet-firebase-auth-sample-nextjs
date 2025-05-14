@@ -16,9 +16,13 @@ import { useAccount, useChainId, useConnect, useDisconnect, useEnsName } from "w
 const HomePage: NextPage = () => {
   const { user } = useAuth();
   const { embeddedState, getEvmProvider } = useOpenfort();
+  console.log("embeddedState", embeddedState);
   const [message, setMessage] = useState<string>("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const {connectors, connect } = useConnect();
+  const { status, isConnected } = useAccount();
+  console.log("status", status);
+  console.log("isConnected", isConnected);
   const chainId = useChainId();
 
   const handleSetMessage = (message: string) => {
@@ -38,12 +42,14 @@ const HomePage: NextPage = () => {
   }, []);
 
   useEffect(() => {
-    if(embeddedState === EmbeddedState.READY) {
+    console.log("embeddedState", embeddedState);
+    if(embeddedState === EmbeddedState.READY && !isConnected && status !== "connecting") {
       const connector = connectors.find((connector) => connector.name === "Openfort")
+      console.log("connector", connector)
       if(!connector) return
       connect({connector: connector!, chainId});
     }
-  }, [embeddedState]);
+  }, [connectors, status]);
 
   if (!user) return <LoginSignupForm />;
 

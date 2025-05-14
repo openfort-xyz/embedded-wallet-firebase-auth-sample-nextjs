@@ -1,5 +1,6 @@
-import Openfort, { OpenfortConfiguration, ShieldConfiguration } from '@openfort/openfort-js';
+import { Openfort, OpenfortConfiguration, ShieldConfiguration } from '@openfort/openfort-js';
 
+export const shieldUrl = process.env.NEXT_PUBLIC_SHIELD_URL ?? 'https://shield.openfort.xyz';
 
 const baseConfiguration: OpenfortConfiguration = {
   publishableKey: process.env.NEXT_PUBLIC_OPENFORT_PUBLIC_KEY!,
@@ -16,6 +17,10 @@ if (!process.env.NEXT_PUBLIC_OPENFORT_PUBLIC_KEY || !process.env.NEXT_PUBLIC_SHI
 const openfort = new Openfort({
   baseConfiguration,
   shieldConfiguration,
+  overrides: {
+    shieldUrl: shieldUrl,
+    backendUrl: 'http://localhost:3000'
+  },
 })
 
 export default openfort;

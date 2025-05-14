@@ -30,7 +30,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                   Sign in to the demo to access the dev tools.
                   </p>
                   <Button variant={'outline'} size={'sm'} className="mt-2">
-                    <Link href='https://openfort.xyz/docs' target="_blank">
+                    <Link href='https://openfort.io/docs' target="_blank">
                       Explore the Docs
                     </Link>
                   </Button>
@@ -40,7 +40,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                 <p className="text-sm text-gray-600 mb-4">
                 {'Openfort gives you modular components so you can customize your product for your users. '}
                 <a
-                  href="https://www.openfort.xyz/docs/guides/getting-started"
+                  href="https://www.openfort.io/docs/products/embedded-wallet/javascript"
                   className="text-blue-600 hover:underline"
                 >
                   Learn more

@@ -21,8 +21,9 @@ class OpenfortService {
   getEvmProvider(): Provider {
     return openfort.getEthereumProvider({ policy: process.env.NEXT_PUBLIC_POLICY_ID });
   }
-  async getEmbeddedState() {
-    const state = await openfort.getEmbeddedState();
+
+  getEmbeddedState() {
+    const state = openfort.getEmbeddedState();
     return state;
   }
 

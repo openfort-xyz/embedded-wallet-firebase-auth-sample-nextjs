@@ -10,7 +10,7 @@ const SignTypedDataButton: React.FC<{
   handleSetMessage: (message: string) => void;
 }> = ({ handleSetMessage }) => {
   const { embeddedState } = useOpenfort();
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const { signTypedData, data, isPending, error  } = useSignTypedData();
   const { idToken } = useAuth();
   const handleSignTypedData = async () => {
@@ -68,7 +68,7 @@ const SignTypedDataButton: React.FC<{
     <div className="flex flex-col items-center justify-center">
       <button
         onClick={handleSignTypedData}
-        disabled={embeddedState !== EmbeddedState.READY}
+        disabled={embeddedState !== EmbeddedState.READY || !isConnected}
         className={`w-full px-4 py-1 bg-white text-black font-medium border border-gray-200 rounded-lg hover:bg-gray-50 disabled:bg-gray-400 disabled:cursor-not-allowed`}
       >
         {isPending ? <Spinner /> : "Sign Typed Message"}

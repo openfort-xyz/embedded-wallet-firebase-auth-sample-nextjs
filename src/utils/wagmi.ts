@@ -9,7 +9,7 @@ export function getConfig() {
             injected(),
         ],
         transports: {
-            [polygonAmoy.id]: http(),
+            [polygonAmoy.id]: http('https://polygon-amoy.gateway.tenderly.co'),
         },
     })
 }
