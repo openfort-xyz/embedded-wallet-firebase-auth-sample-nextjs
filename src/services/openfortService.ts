@@ -1,4 +1,4 @@
-import { AuthPlayerResponse, Provider, ShieldAuthentication, TokenType, ShieldAuthType } from '@openfort/openfort-js';
+import { AuthPlayerResponse, Provider, ShieldAuthentication, TokenType, ShieldAuthType, RecoveryMethod } from '@openfort/openfort-js';
 import openfort from '../utils/openfortConfig';
 import { ThirdPartyOAuthProvider } from '@openfort/openfort-js';
 import { baseSepolia } from 'viem/chains';
@@ -8,7 +8,7 @@ const chainId = baseSepolia.id
 class OpenfortService {
   async authenticateWithThirdPartyProvider(identityToken: string): Promise<AuthPlayerResponse> {
     try {
-      return await openfort.authenticateWithThirdPartyProvider({
+      return await openfort.auth.authenticateWithThirdPartyProvider({
         provider: ThirdPartyOAuthProvider.FIREBASE,
         token: identityToken,
         tokenType: TokenType.ID_TOKEN
@@ -18,12 +18,12 @@ class OpenfortService {
       throw error;
     }
   }
-  getEvmProvider(): Provider {
-    return openfort.getEthereumProvider({ policy: process.env.NEXT_PUBLIC_POLICY_ID });
+  async getEvmProvider(): Promise<Provider> {
+    return openfort.embeddedWallet.getEthereumProvider({ policy: process.env.NEXT_PUBLIC_POLICY_ID });
   }
 
-  getEmbeddedState() {
-    const state = openfort.getEmbeddedState();
+  async getEmbeddedState() {
+    const state = await openfort.embeddedWallet.getEmbeddedState();
     return state;
   }
 
@@ -52,7 +52,7 @@ class OpenfortService {
         tokenType: TokenType.ID_TOKEN,
         encryptionSession: await this.getEncryptionSession(),
       };
-      await openfort.configureEmbeddedSigner(chainId, shieldAuth);
+      await openfort.embeddedWallet.configure({ chainId, shieldAuthentication: shieldAuth });
     } catch (error) {
       console.error('Error authenticating with Openfort:', error);
       throw error;
@@ -68,7 +68,7 @@ class OpenfortService {
         tokenType: TokenType.ID_TOKEN,
         encryptionSession: await this.getEncryptionSession(),
       };
-      await openfort.configureEmbeddedSigner(chainId, shieldAuth, pin);
+      await openfort.embeddedWallet.configure({ chainId, shieldAuthentication: shieldAuth, recoveryParams: { password: pin, recoveryMethod: RecoveryMethod.PASSWORD } });
     } catch (error) {
       console.error('Error authenticating with Openfort:', error);
       throw error;
@@ -76,7 +76,7 @@ class OpenfortService {
   }
   async logout() {
     try {
-      await openfort.logout();
+      await openfort.auth.logout();
     } catch (error) {
       console.error('Error logging out with Openfort:', error);
       throw error;

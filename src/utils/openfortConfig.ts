@@ -6,6 +6,7 @@ const baseConfiguration: OpenfortConfiguration = {
   publishableKey: process.env.NEXT_PUBLIC_OPENFORT_PUBLIC_KEY!,
 }
 const shieldConfiguration: ShieldConfiguration = {
+  debug: true,
   shieldPublishableKey: process.env.NEXT_PUBLIC_SHIELD_API_KEY!,
 }
 

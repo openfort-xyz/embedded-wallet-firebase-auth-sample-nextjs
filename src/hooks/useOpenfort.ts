@@ -11,8 +11,9 @@ export const useOpenfort = () => {
 
   // Poll embedded state with proper cleanup
   useEffect(() => {
-    const pollEmbeddedState = () => {
-      const state = openfortService.getEmbeddedState();
+    const pollEmbeddedState = async () => {
+      const state = await openfortService.getEmbeddedState();
+      console.log('Current embedded state:', state);
       setEmbeddedState(state);
     };
 
@@ -44,10 +45,10 @@ export const useOpenfort = () => {
     }
   }, []);
 
-  const initializeEvmProvider = useCallback((): Provider | null => {
+  const initializeEvmProvider = useCallback(async (): Promise<Provider | null> => {
     try {
       if (!providerRef.current) {
-        const provider = openfortService.getEvmProvider();
+        const provider = await openfortService.getEvmProvider();
         if (!provider) {
           throw new Error('EVM provider is undefined');
         }
@@ -61,9 +62,9 @@ export const useOpenfort = () => {
     }
   }, []);
 
-  const getEvmProvider = useCallback((): Provider => {
+  const getEvmProvider = useCallback(async (): Promise<Provider> => {
     if (!providerRef.current) {
-      const provider = initializeEvmProvider();
+      const provider = await initializeEvmProvider();
       if (!provider) {
         throw new Error('EVM provider not initialized');
       }
