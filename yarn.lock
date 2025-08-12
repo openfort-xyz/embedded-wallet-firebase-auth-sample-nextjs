@@ -64,6 +64,21 @@
     ethereum-cryptography "^2.0.0"
     micro-ftch "^0.3.1"
 
+"@ethersproject/abi@^5.8.0":
+  version "5.8.0"
+  resolved "https://registry.yarnpkg.com/@ethersproject/abi/-/abi-5.8.0.tgz#e79bb51940ac35fe6f3262d7fe2cdb25ad5f07d9"
+  integrity sha512-b9YS/43ObplgyV6SlyQsG53/vkSal0MNA1fskSC4mbnCMi8R+NkcH8K9FPYNESf6jUefBUniE4SOKms0E/KK1Q==
+  dependencies:
+    "@ethersproject/address" "^5.8.0"
+    "@ethersproject/bignumber" "^5.8.0"
+    "@ethersproject/bytes" "^5.8.0"
+    "@ethersproject/constants" "^5.8.0"
+    "@ethersproject/hash" "^5.8.0"
+    "@ethersproject/keccak256" "^5.8.0"
+    "@ethersproject/logger" "^5.8.0"
+    "@ethersproject/properties" "^5.8.0"
+    "@ethersproject/strings" "^5.8.0"
+
 "@ethersproject/abstract-provider@^5.8.0":
   version "5.8.0"
   resolved "https://registry.yarnpkg.com/@ethersproject/abstract-provider/-/abstract-provider-5.8.0.tgz#7581f9be601afa1d02b95d26b9d9840926a35b0c"
@@ -1122,11 +1137,13 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@openfort/openfort-js@^0.9.5":
-  version "0.9.5"
-  resolved "https://registry.yarnpkg.com/@openfort/openfort-js/-/openfort-js-0.9.5.tgz#eacc1f307ff283d75d59f92734d57da0f4ccc4c7"
-  integrity sha512-Yy3pITmS8bKatr/SGgIkRcuBGjyM/p9xzNvlqQ/k9tA0DhCdqnN5f/2ZXRGauBFxW7UTHbAWx4tsPSoPwB2n0Q==
+"@openfort/openfort-js@^0.9.7":
+  version "0.9.7"
+  resolved "https://registry.yarnpkg.com/@openfort/openfort-js/-/openfort-js-0.9.7.tgz#c97ec1ea40565657cde9b8990c1b1fd82cbac2cd"
+  integrity sha512-tnnNY04hEcNsaAoKho6wVoIn8iqbIg9f++w7W04VhdyYVclR0B7Esh8FqkxGLHQ31EQnsxNVbV1LD/dAiF2ZLQ==
   dependencies:
+    "@ethersproject/abi" "^5.8.0"
+    "@ethersproject/bytes" "^5.8.0"
     "@ethersproject/hash" "^5.8.0"
     "@ethersproject/providers" "^5.8.0"
     "@openfort/shield-js" "^0.1.14"
